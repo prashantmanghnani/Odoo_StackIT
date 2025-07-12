@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}{{ question.title }}{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Question</li>
+  </ol>
+</nav>
+<div class="card mb-3">
+  <div class="card-body">
+    <h3 class="card-title">{{ question.title }}</h3>
+    <div class="mb-2">
+      {% if question.tags %}
+        {% for tag in question.tags.split(',') %}
+          <span class="badge bg-info text-dark">{{ tag }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="mb-3">{{ question.body_html|safe }}</div>
+    <small class="text-muted">Asked by {{ question.username }}</small>
+  </div>
+</div>
+<h5>Answers</h5>
+{% for a in answers %}
+  <div class="card mb-2 {% if question.accepted_answer_id == a.id %}border-success{% endif %}">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="fw-bold">{{ a.username }}</span>
+          {% if question.accepted_answer_id == a.id %}
+            <span class="badge bg-success ms-2">Accepted</span>
+          {% endif %}
+        </div>
+        <div>
+          <button class="btn btn-outline-success btn-sm vote-btn" data-id="{{ a.id }}" data-value="1">▲</button>
+          <span class="mx-1" id="vote-count-{{ a.id }}">{{ a.vote_count }}</span>
+          <button class="btn btn-outline-danger btn-sm vote-btn" data-id="{{ a.id }}" data-value="-1">▼</button>
+          {% if current_user.is_authenticated and question.user_id == current_user.id and question.accepted_answer_id != a.id %}
+            <button class="btn btn-outline-primary btn-sm ms-2 accept-btn" data-id="{{ a.id }}" data-qid="{{ question.id }}">Accept</button>
+          {% endif %}
+        </div>
+      </div>
+      <div class="mt-2">{{ a.body_html|safe }}</div>
+      <small class="text-muted">Answered on {{ a.created_at }}</small>
+    </div>
+  </div>
+{% else %}
+  <div class="alert alert-info">No answers yet.</div>
+{% endfor %}
+{% if current_user.is_authenticated %}
+<div class="card mt-4">
+  <div class="card-body">
+    <h5>Your Answer</h5>
+    <form method="post" action="/answer">
+      <input type="hidden" name="question_id" value="{{ question.id }}">
+      <div id="answer-editor" style="height: 150px;"></div>
+      <input type="hidden" name="body" id="answer-body">
+      <button type="submit" class="btn btn-primary mt-2">Post Answer</button>
+    </form>
+  </div>
+</div>
+<script>
+var quill = new Quill('#answer-editor', { theme: 'snow', modules: { toolbar: [
+  [{ header: [1, 2, false] }],
+  ['bold', 'italic', 'underline'],
+  ['link', 'image', 'code-block'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'align': [] }]
+] } });
+$('form[action="/answer"]').on('submit', function() {
+  $('#answer-body').val(quill.root.innerHTML);
+});
+</script>
+{% else %}
+<div class="alert alert-warning mt-4">You must <a href="/login">login</a> to post an answer or vote.</div>
+{% endif %}
+<script>
+$('.vote-btn').on('click', function() {
+  var btn = $(this);
+  $.post('/vote', { answer_id: btn.data('id'), value: btn.data('value') }, function(data) {
+    $('#vote-count-' + btn.data('id')).text(data.vote_count);
+  });
+});
+$('.accept-btn').on('click', function() {
+  var btn = $(this);
+  $.post('/accept_answer', { answer_id: btn.data('id'), question_id: btn.data('qid') }, function(data) {
+    if (data.success) location.reload();
+  });
+});
+</script>
+{% endblock %} 

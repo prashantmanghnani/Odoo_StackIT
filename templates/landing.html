@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}StackIt - Your Programming Q&A Community{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center justify-content-center">
+  <div class="container">
+    <div class="row align-items-center justify-content-center min-vh-75">
+      <div class="col-lg-8 text-center mx-auto">
+        <h1 class="display-3 fw-bold mb-4">Find Answers to Your Programming Questions</h1>
+        <p class="lead mb-4">
+          Join thousands of developers who ask questions, share knowledge, and build their careers on StackIt.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="{{ url_for('index') }}" class="btn btn-light btn-lg">
+            <i class="bi bi-search me-2"></i>Browse Questions
+          </a>
+          <a href="{{ url_for('ask') }}" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-plus-circle me-2"></i>Ask Question
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center d-none d-lg-flex align-items-center justify-content-center">
+        <div class="hero-image">
+          <i class="bi bi-code-square display-1 text-light opacity-75"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="h1 mb-4">About StackIt</h2>
+                <p class="lead text-muted">
+                    StackIt is a community-driven platform where developers can ask questions, share knowledge, 
+                    and learn from each other. Whether you're a beginner or an expert, there's always something 
+                    new to discover.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose StackIt?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-people-fill text-primary display-4"></i>
+                        </div>
+                        <h5 class="card-title">Community Driven</h5>
+                        <p class="card-text text-muted">
+                            Connect with developers from around the world. Share knowledge and learn from the community.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-lightning-fill text-warning display-4"></i>
+                        </div>
+                        <h5 class="card-title">Fast Answers</h5>
+                        <p class="card-text text-muted">
+                            Get quick, accurate answers to your programming questions from experienced developers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-shield-check text-success display-4"></i>
+                        </div>
+                        <h5 class="card-title">Quality Content</h5>
+                        <p class="card-text text-muted">
+                            Moderated content ensures high-quality answers and a helpful community environment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="step-number mb-3">
+                    <span class="badge bg-primary rounded-circle p-3">1</span>
+                </div>
+                <h5>Ask a Question</h5>
+                <p class="text-muted">Post your programming question with clear details and relevant tags.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="step-number mb-3">
+                    <span class="badge bg-primary rounded-circle p-3">2</span>
+                </div>
+                <h5>Get Answers</h5>
+                <p class="text-muted">Receive answers from the community and vote on the best solutions.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="step-number mb-3">
+                    <span class="badge bg-primary rounded-circle p-3">3</span>
+                </div>
+                <h5>Accept Solution</h5>
+                <p class="text-muted">Mark the best answer as accepted to help others find solutions.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="step-number mb-3">
+                    <span class="badge bg-primary rounded-circle p-3">4</span>
+                </div>
+                <h5>Build Reputation</h5>
+                <p class="text-muted">Earn reputation by asking good questions and providing helpful answers.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                How do I ask a good question?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Be specific about your problem, include relevant code snippets, describe what you've tried, 
+                                and use appropriate tags. The more details you provide, the better answers you'll receive.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                How does voting work?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can upvote or downvote questions and answers. Upvoting shows appreciation for good content, 
+                                while downvoting helps identify poor quality content. Your votes help the community identify the best answers.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                What are tags used for?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Tags help categorize questions and make them easier to find. Use specific tags related to your 
+                                programming language, framework, or technology to help others find your question.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                                How do I build reputation?
+                            </button>
+                        </h2>
+                        <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Earn reputation by asking good questions, providing helpful answers, and receiving upvotes. 
+                                Higher reputation unlocks additional privileges like commenting and editing.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5 bg-primary">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">
+            Join our community of developers and start asking questions today!
+        </p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                <i class="bi bi-person-plus me-2"></i>Sign Up
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4" style="background: #0f172a !important; color: white !important;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="text-white" style="color: white !important;">StackIt</h5>
+                <p class="text-muted" style="color: rgba(255,255,255,0.8) !important;">
+                    Your programming Q&A community. Ask questions, share knowledge, and grow together.
+                </p>
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-white" style="color: white !important;">Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{{ url_for('index') }}" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">Questions</a></li>
+                    <li><a href="{{ url_for('ask') }}" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">Ask Question</a></li>
+                    <li><a href="{{ url_for('landing') }}" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">About</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6 class="text-white" style="color: white !important;">Connect</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">GitHub</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">Twitter</a></li>
+                    <li><a href="#" class="text-muted text-decoration-none" style="color: rgba(255,255,255,0.8) !important;">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="text-center text-muted">
+            <small style="color: rgba(255,255,255,0.7) !important;">&copy; 2024 StackIt. Built with Flask and love for the developer community.</small>
+        </div>
+    </div>
+</footer>
+{% endblock %} 

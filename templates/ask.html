@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Ask a Question{% endblock %}
+{% block content %}
+<h2>Ask a New Question</h2>
+<form method="post">
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" class="form-control" id="title" name="title" required maxlength="120">
+  </div>
+  <div class="mb-3">
+    <label for="body" class="form-label">Description</label>
+    <div id="editor" style="height: 200px;"></div>
+    <input type="hidden" name="body" id="body">
+  </div>
+  <div class="mb-3">
+    <label for="tags" class="form-label">Tags (comma separated)</label>
+    <input type="text" class="form-control" id="tags" name="tags" placeholder="e.g. Python, Flask, SQL">
+  </div>
+  <button type="submit" class="btn btn-primary">Post Question</button>
+</form>
+<script>
+var quill = new Quill('#editor', { theme: 'snow', modules: { toolbar: [
+  [{ header: [1, 2, false] }],
+  ['bold', 'italic', 'underline'],
+  ['link', 'image', 'code-block'],
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'align': [] }]
+] } });
+$('form').on('submit', function() {
+  $('#body').val(quill.root.innerHTML);
+});
+</script>
+{% endblock %} 
