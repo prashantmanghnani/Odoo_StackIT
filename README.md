@@ -2,7 +2,7 @@
 
 StackIt is a modern, beautiful Q&A platform inspired by Stack Overflow, built with Flask. It features user authentication, question/answer posting, search, and a responsive, visually appealing UI.
 
-![StackIt Screenshot](landing.png)
+![StackIt Screenshot](static/screenshots/landing.png)
 
 ---
 
@@ -10,6 +10,9 @@ StackIt is a modern, beautiful Q&A platform inspired by Stack Overflow, built wi
 
 - **User Authentication**: Register, login, and logout with Flask-Login
 - **Q&A System**: Ask questions and provide answers
+- **Reputation System**: Users gain/lose reputation based on upvotes/downvotes
+- **Voting System**: Upvote/downvote answers to affect user reputation
+- **Admin Controls**: Admins can delete any answer or ban users
 - **Search & Filter**: Find questions by title and tags
 - **Modern UI**: Responsive design with Bootstrap 5, Google Fonts, and custom CSS
 - **Landing Page**: Beautiful homepage with About, Features, and FAQ sections
@@ -96,8 +99,16 @@ The setup script creates several demo users. You can log in with any of these:
 2. **Login**: Use the demo credentials or your registered account
 3. **Ask Questions**: Click "Ask Question" to post your query
 4. **Answer**: Click on any question to view and add answers
-5. **Search**: Use the search bar to find specific questions
-6. **Explore**: Check the landing page for features and FAQ
+5. **Vote**: Upvote (▲) or downvote (▼) answers to affect user reputation
+6. **Search**: Use the search bar to find specific questions
+7. **Explore**: Check the landing page for features and FAQ
+
+### Reputation System
+
+- **Upvote (+10)**: Users gain 10 reputation points when their answer is upvoted
+- **Downvote (-2)**: Users lose 2 reputation points when their answer is downvoted
+- **Reputation Display**: User reputation is shown next to their username in answers
+- **Admin Controls**: Admins can delete any answer and have higher reputation
 
 ### For Developers
 

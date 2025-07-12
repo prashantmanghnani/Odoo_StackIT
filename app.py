@@ -24,6 +24,11 @@ class User(UserMixin):
         self.email = user_data['email']
         self.is_admin = user_data['is_admin']
         self.is_banned = user_data['is_banned']
+        # Handle reputation field - it might not exist in old database
+        try:
+            self.reputation = user_data['reputation']
+        except (KeyError, IndexError):
+            self.reputation = 0
         self.created_at = user_data['created_at']
     
     @property
@@ -44,6 +49,7 @@ def init_db():
             password_hash TEXT NOT NULL,
             is_admin BOOLEAN DEFAULT 0,
             is_banned BOOLEAN DEFAULT 0,
+            reputation INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -306,9 +312,9 @@ def question(question_id):
         flash('Question not found!', 'error')
         return redirect(url_for('index'))
     
-    # Get answers with vote counts
+    # Get answers with vote counts and reputation
     answers = conn.execute('''
-        SELECT a.*, u.username,
+        SELECT a.*, u.username, u.reputation,
                (SELECT COALESCE(SUM(v.value), 0) FROM votes v WHERE v.answer_id = a.id) as vote_count
         FROM answers a
         LEFT JOIN users u ON a.user_id = u.id
@@ -367,11 +373,26 @@ def vote():
     
     conn = get_db()
     
+    # Get answer author for reputation calculation
+    answer = conn.execute(
+        'SELECT user_id FROM answers WHERE id = ?', (answer_id,)
+    ).fetchone()
+    
+    if not answer:
+        conn.close()
+        return jsonify({'error': 'Answer not found'}), 404
+    
+    answer_author_id = answer['user_id']
+    
     # Check if user already voted
     existing_vote = conn.execute(
         'SELECT value FROM votes WHERE user_id = ? AND answer_id = ?',
         (current_user.id, answer_id)
     ).fetchone()
+    
+    old_vote_value = 0
+    if existing_vote:
+        old_vote_value = existing_vote['value']
     
     if existing_vote:
         if existing_vote['value'] == value:
@@ -380,30 +401,81 @@ def vote():
                 'DELETE FROM votes WHERE user_id = ? AND answer_id = ?',
                 (current_user.id, answer_id)
             )
+            # Update reputation (remove old vote effect)
+            if old_vote_value == 1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation - 10 WHERE id = ?',
+                    (answer_author_id,)
+                )
+            elif old_vote_value == -1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation + 2 WHERE id = ?',
+                    (answer_author_id,)
+                )
         else:
             # Change vote
             conn.execute(
                 'UPDATE votes SET value = ? WHERE user_id = ? AND answer_id = ?',
                 (value, current_user.id, answer_id)
             )
+            # Update reputation (remove old vote and add new vote effect)
+            if old_vote_value == 1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation - 10 WHERE id = ?',
+                    (answer_author_id,)
+                )
+            elif old_vote_value == -1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation + 2 WHERE id = ?',
+                    (answer_author_id,)
+                )
+            
+            if value == 1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation + 10 WHERE id = ?',
+                    (answer_author_id,)
+                )
+            elif value == -1:
+                conn.execute(
+                    'UPDATE users SET reputation = reputation - 2 WHERE id = ?',
+                    (answer_author_id,)
+                )
     else:
         # New vote
         conn.execute(
             'INSERT INTO votes (user_id, answer_id, value) VALUES (?, ?, ?)',
             (current_user.id, answer_id, value)
         )
+        # Update reputation
+        if value == 1:
+            conn.execute(
+                'UPDATE users SET reputation = reputation + 10 WHERE id = ?',
+                (answer_author_id,)
+            )
+        elif value == -1:
+            conn.execute(
+                'UPDATE users SET reputation = reputation - 2 WHERE id = ?',
+                (answer_author_id,)
+            )
     
     conn.commit()
     
-    # Get updated vote count
+    # Get updated vote count and reputation
     vote_count = conn.execute(
         'SELECT COALESCE(SUM(value), 0) as count FROM votes WHERE answer_id = ?',
         (answer_id,)
     ).fetchone()['count']
     
+    updated_reputation = conn.execute(
+        'SELECT reputation FROM users WHERE id = ?', (answer_author_id,)
+    ).fetchone()['reputation']
+    
     conn.close()
     
-    return jsonify({'vote_count': vote_count})
+    return jsonify({
+        'vote_count': vote_count,
+        'reputation': updated_reputation
+    })
 
 @app.route('/accept_answer', methods=['POST'])
 @login_required
@@ -427,6 +499,39 @@ def accept_answer():
         'UPDATE questions SET accepted_answer_id = ? WHERE id = ?',
         (answer_id, question_id)
     )
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True})
+
+@app.route('/delete_answer', methods=['POST'])
+@login_required
+def delete_answer():
+    answer_id = request.form.get('answer_id')
+    
+    conn = get_db()
+    
+    # Get answer details
+    answer = conn.execute(
+        'SELECT a.*, u.username FROM answers a JOIN users u ON a.user_id = u.id WHERE a.id = ?',
+        (answer_id,)
+    ).fetchone()
+    
+    if not answer:
+        conn.close()
+        return jsonify({'error': 'Answer not found'}), 404
+    
+    # Check if user is admin or answer author
+    if not current_user.is_admin and answer['user_id'] != current_user.id:
+        conn.close()
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    # Delete the answer
+    conn.execute('DELETE FROM answers WHERE id = ?', (answer_id,))
+    
+    # Also delete associated votes
+    conn.execute('DELETE FROM votes WHERE answer_id = ?', (answer_id,))
     
     conn.commit()
     conn.close()

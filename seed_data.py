@@ -8,16 +8,16 @@ cursor = conn.cursor()
 
 # Users
 users = [
-    ('alice', 'alice@example.com', 'password1', 0, 0),
-    ('bob', 'bob@example.com', 'password2', 0, 0),
-    ('carol', 'carol@example.com', 'password3', 0, 0),
-    ('dave', 'dave@example.com', 'password4', 0, 0),
-    ('eve', 'eve@example.com', 'password5', 1, 0),  # admin
-    ('frank', 'frank@example.com', 'password6', 0, 0),
-    ('grace', 'grace@example.com', 'password7', 0, 0),
-    ('heidi', 'heidi@example.com', 'password8', 0, 0),
-    ('ivan', 'ivan@example.com', 'password9', 0, 0),
-    ('judy', 'judy@example.com', 'password10', 0, 0),
+    ('alice', 'alice@example.com', 'password1', 0, 0, 85),
+    ('bob', 'bob@example.com', 'password2', 0, 0, 120),
+    ('carol', 'carol@example.com', 'password3', 0, 0, 95),
+    ('dave', 'dave@example.com', 'password4', 0, 0, 200),
+    ('eve', 'eve@example.com', 'password5', 1, 0, 500),  # admin
+    ('frank', 'frank@example.com', 'password6', 0, 0, 75),
+    ('grace', 'grace@example.com', 'password7', 0, 0, 110),
+    ('heidi', 'heidi@example.com', 'password8', 0, 0, 60),
+    ('ivan', 'ivan@example.com', 'password9', 0, 0, 180),
+    ('judy', 'judy@example.com', 'password10', 0, 0, 90),
 ]
 
 cursor.execute('DELETE FROM users')
@@ -29,9 +29,9 @@ cursor.execute('DELETE FROM votes')
 cursor.execute('DELETE FROM notifications')
 
 user_ids = []
-for username, email, pw, is_admin, is_banned in users:
-    cursor.execute('INSERT INTO users (username, email, password_hash, is_admin, is_banned) VALUES (?, ?, ?, ?, ?)',
-                   (username, email, generate_password_hash(pw), is_admin, is_banned))
+for username, email, pw, is_admin, is_banned, reputation in users:
+    cursor.execute('INSERT INTO users (username, email, password_hash, is_admin, is_banned, reputation) VALUES (?, ?, ?, ?, ?, ?)',
+                   (username, email, generate_password_hash(pw), is_admin, is_banned, reputation))
     user_ids.append(cursor.lastrowid)
 
 # Tags
