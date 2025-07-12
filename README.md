@@ -2,7 +2,7 @@
 
 StackIt is a modern, beautiful Q&A platform inspired by Stack Overflow, built with Flask. It features user authentication, question/answer posting, search, and a responsive, visually appealing UI.
 
-![StackIt Screenshot](static/screenshots/landing.png)
+![StackIt Screenshot](landing.png)
 
 ---
 
